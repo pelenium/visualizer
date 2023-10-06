@@ -1,5 +1,5 @@
 # visualizer
 
-- [ ] Draw curve
+- [x] Draw curve
 - [ ] Parse HTML
 - [ ] Fill area within curve
