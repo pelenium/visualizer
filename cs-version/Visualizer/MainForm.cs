@@ -83,10 +83,10 @@ namespace Visualizer
                     for (int i = 0; i < newPoints.Count; i++)
                     {
                         if (i == newPoints.Count - 1) { 
-                            graphic.DrawLine(new Pen(Color.White), newPoints[i].X, newPoints[i].Y, newPoints[0].X, newPoints[0].Y);
+                            graphic.DrawLine(new Pen(Color.White, (float)2.5), newPoints[i].X, newPoints[i].Y, newPoints[0].X, newPoints[0].Y);
                         } else
                         {
-                            graphic.DrawLine(new Pen(Color.White), newPoints[i].X, newPoints[i].Y, newPoints[i+1].X, newPoints[i+1].Y);
+                            graphic.DrawLine(new Pen(Color.White, (float)2.5), newPoints[i].X, newPoints[i].Y, newPoints[i+1].X, newPoints[i+1].Y);
                         }
                     }
 
