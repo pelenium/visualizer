@@ -5,7 +5,7 @@ import (
 )
 
 func ChaikinSmooth(points []rl.Vector2) []rl.Vector2 {
-	result := make([]rl.Vector2, 0)
+	result := make([]rl.Vector2, 0);
 
 	result = append(result, points[0])
 	for i := 0; i < len(points)-1; i++ {

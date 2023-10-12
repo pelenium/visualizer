@@ -41,7 +41,7 @@ namespace Visualizer
                     string list = ListName.Text;
                     ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[list];
 
-                    List<Point> points = new List<Point>();
+                    List<List<Point>> points = new List<List<Point>>();
                     if (worksheet != null)
                     {
 
@@ -49,7 +49,14 @@ namespace Visualizer
                     {
                         for (int row = 1; row <= worksheet.Dimension.Rows; row++)
                         {
-                            points.Add(new Point((int) float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int) float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
+                            if (points.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
+                            {
+                                points.Add(new List<Point>());
+                            }
+                            else
+                            {
+                                points[points.Count - 1].Add(new Point((int) float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int) float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
+                            }
                         }
                     }
                     catch (Exception ex1)
@@ -69,11 +76,16 @@ namespace Visualizer
                     }
 
                     int divisionCounter = DivisionCounter.Value;
-                    List<Point> newPoints = points;
+                    List<List<Point>> newPoints = points;
                     for (int i = 0; i < divisionCounter; i++)
                     {
-                        newPoints = ChaikinSmooth(newPoints);
+                        for (int j = 0; j < newPoints.Count; j++)
+                        {
+                            newPoints[j] = ChaikinSmooth(newPoints[j]);
+                        }
                     }
+
+                    Console.WriteLine(newPoints[0].Count);
 
                     graphicResult = new Bitmap(ResultGraphic.Width, ResultGraphic.Height);
 
@@ -82,11 +94,14 @@ namespace Visualizer
 
                     for (int i = 0; i < newPoints.Count; i++)
                     {
-                        if (i == newPoints.Count - 1) { 
-                            graphic.DrawLine(new Pen(Color.White, (float)2.5), newPoints[i].X, newPoints[i].Y, newPoints[0].X, newPoints[0].Y);
-                        } else
+                        for (int j = 0; j < newPoints[i].Count; j++)
                         {
-                            graphic.DrawLine(new Pen(Color.White, (float)2.5), newPoints[i].X, newPoints[i].Y, newPoints[i+1].X, newPoints[i+1].Y);
+                            Console.WriteLine(newPoints[i][j].X);
+                            Console.WriteLine(newPoints[i][j].Y);
+
+                            if (j < newPoints[i].Count - 1) {
+                                graphic.DrawLine(new Pen(Color.White, (float)2.5), newPoints[i][j].X, newPoints[i][j].Y, newPoints[i][j+1].X, newPoints[i][j+1].Y);
+                            }
                         }
                     }
 
