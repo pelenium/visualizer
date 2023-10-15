@@ -86,7 +86,7 @@
             this.InsrumentPanel.Controls.Add(this.DrawButton);
             this.InsrumentPanel.Controls.Add(this.ListName);
             this.InsrumentPanel.Controls.Add(this.LoadButton);
-            this.InsrumentPanel.Location = new System.Drawing.Point(818, 12);
+            this.InsrumentPanel.Location = new System.Drawing.Point(1018, 12);
             this.InsrumentPanel.Name = "InsrumentPanel";
             this.InsrumentPanel.Size = new System.Drawing.Size(143, 800);
             this.InsrumentPanel.TabIndex = 0;
@@ -102,7 +102,7 @@
             // 
             this.ResultGraphic.Location = new System.Drawing.Point(12, 12);
             this.ResultGraphic.Name = "ResultGraphic";
-            this.ResultGraphic.Size = new System.Drawing.Size(800, 800);
+            this.ResultGraphic.Size = new System.Drawing.Size(1000, 800);
             this.ResultGraphic.TabIndex = 1;
             this.ResultGraphic.TabStop = false;
             // 
@@ -110,7 +110,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(974, 824);
+            this.ClientSize = new System.Drawing.Size(1174, 875);
             this.Controls.Add(this.ResultGraphic);
             this.Controls.Add(this.InsrumentPanel);
             this.Name = "MainForm";
