@@ -1,6 +1,9 @@
 # visualizer
 
+<img src="https://i.postimg.cc/76Dmdqjk/image.jpg">
+
 TODO:
-- [x] Drawing a curve
+- [x] Drawing curves
 - [x] Parsing Excel
-- [ ] Better design
+- [x] Better design
+- [ ] Filling free area
