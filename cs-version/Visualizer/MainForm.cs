@@ -82,15 +82,26 @@ namespace Visualizer
                     Console.WriteLine(points.Count);
 
                     points = ConvertToCoordinateSystem(points);
+                    List<Point> lineEnding = new List<Point>();
                     for (int i = 0; i < points.Count; i++)
                     {
-                        for (int j = 0; j < points[i].Count; j++)
+                        if (i == 0 || i == points.Count - 1)
                         {
-                            // Console.WriteLine($"{points[i][j].X} {points[i][j].Y}");
-
-                            if (j < points[i].Count - 1) {
-                                graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j+1].X, points[i][j+1].Y);
+                            for (int j = 0; j < points[i].Count; j++)
+                            {
+                                if (j < points[i].Count - 1) {
+                                    graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j+1].X, points[i][j+1].Y);
+                                }
                             }
+                            if (i == 0)
+                            {
+                                graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
+                                graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
+                            }
+                        } else 
+                        {
+                            graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][0].X, points[i][0].Y, points[i+1][0].X, points[i+1][0].Y);
+                            graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][points[i].Count-1].X, points[i][points[i].Count - 1].Y, points[i+1][points[i+1].Count - 1].X, points[i+1][points[i+1].Count - 1].Y);
                         }
                     }
 
