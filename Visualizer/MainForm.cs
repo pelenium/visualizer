@@ -55,7 +55,7 @@ namespace Visualizer
                                 }
                                 else
                                 {
-                                    points[points.Count - 1].Add(new Point((int) float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int) float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
+                                    points[points.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
                                 }
                             }
                         }
@@ -63,7 +63,8 @@ namespace Visualizer
                         {
                             Console.WriteLine(ex1);
                         }
-                    } else
+                    }
+                    else
                     {
                         MessageBox.Show(
                             "Incorrect Excel list",
@@ -86,23 +87,14 @@ namespace Visualizer
                     List<Point> lineEnding = new List<Point>();
                     for (int i = 0; i < points.Count; i++)
                     {
-                        if (i == 0 || i == points.Count - 1)
+                        for (int j = 0; j < points[i].Count; j++)
                         {
-                            for (int j = 0; j < points[i].Count; j++)
+                            if (j < points[i].Count - 1)
                             {
-                                if (j < points[i].Count - 1) {
-                                    graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j+1].X, points[i][j+1].Y);
-                                }
+                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
+                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
+
                             }
-                            if (i == 0)
-                            {
-                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
-                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
-                            }
-                        } else 
-                        {
-                            graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][0].X, points[i][0].Y, points[i+1][0].X, points[i+1][0].Y);
-                            graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][points[i].Count-1].X, points[i][points[i].Count - 1].Y, points[i+1][points[i+1].Count - 1].X, points[i+1][points[i+1].Count - 1].Y);
                         }
                     }
 
