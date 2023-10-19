@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
 using OfficeOpenXml;
+using System.Drawing.Text;
 
 namespace Visualizer
 {
@@ -77,7 +78,7 @@ namespace Visualizer
                     graphicResult = new Bitmap(ResultGraphic.Width, ResultGraphic.Height);
 
                     graphic = Graphics.FromImage(graphicResult);
-                    graphic.Clear(Color.Black);
+                    graphic.Clear(Color.White);
 
                     Console.WriteLine(points.Count);
 
@@ -90,18 +91,18 @@ namespace Visualizer
                             for (int j = 0; j < points[i].Count; j++)
                             {
                                 if (j < points[i].Count - 1) {
-                                    graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j+1].X, points[i][j+1].Y);
+                                    graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j+1].X, points[i][j+1].Y);
                                 }
                             }
                             if (i == 0)
                             {
-                                graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
-                                graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
+                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
+                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
                             }
                         } else 
                         {
-                            graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][0].X, points[i][0].Y, points[i+1][0].X, points[i+1][0].Y);
-                            graphic.DrawLine(new Pen(Color.White, (float)2.5), points[i][points[i].Count-1].X, points[i][points[i].Count - 1].Y, points[i+1][points[i+1].Count - 1].X, points[i+1][points[i+1].Count - 1].Y);
+                            graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][0].X, points[i][0].Y, points[i+1][0].X, points[i+1][0].Y);
+                            graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][points[i].Count-1].X, points[i][points[i].Count - 1].Y, points[i+1][points[i+1].Count - 1].X, points[i+1][points[i+1].Count - 1].Y);
                         }
                     }
 
@@ -170,6 +171,21 @@ namespace Visualizer
             Console.WriteLine($"maxX = {maxX}, maxY = {maxY}");
             Console.WriteLine($"minX = {minX}, minY = {minY}");
             Console.WriteLine();
+
+            int lengthX = ((int)maxX).ToString().Length;
+            int lengthY = ((int)maxY).ToString().Length;
+
+            var foo = new PrivateFontCollection();
+
+            for (int i = 0; i < 5; i++)
+            {
+                graphic.DrawLine(new Pen(Color.Black, (float)2.5), 1000 / 5 * i, 800, 1000 / 5 * i, 795);
+                graphic.DrawLine(new Pen(Color.Black, (float)2.5), 0, 800 / 5 * i, 5, 800 / 5 * i);
+                if (i != 0)
+                    graphic.DrawString((maxX / 5 * i).ToString(), new Font("Times New Roman", 24, FontStyle.Regular), new SolidBrush(Color.Black), 1000 / 5 * i - 25, 750);
+            }
+
+
 
             foreach (var line in points)
             {

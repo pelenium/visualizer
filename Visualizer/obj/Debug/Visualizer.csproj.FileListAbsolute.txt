@@ -17,3 +17,21 @@ C:\development\visualizer\cs-version\Visualizer\obj\Debug\Visualizer.csproj.Core
 C:\development\visualizer\cs-version\Visualizer\obj\Debug\Visualizer.csproj.CopyComplete
 C:\development\visualizer\cs-version\Visualizer\obj\Debug\Visualizer.exe
 C:\development\visualizer\cs-version\Visualizer\obj\Debug\Visualizer.pdb
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\Visualizer.exe.config
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\Visualizer.exe
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\Visualizer.pdb
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\EPPlus.dll
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\EPPlus.Interfaces.dll
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\EPPlus.System.Drawing.dll
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\System.ComponentModel.Annotations.dll
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\EPPlus.xml
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\bin\Debug\Microsoft.IO.RecyclableMemoryStream.xml
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\obj\Debug\Visualizer.csprojAssemblyReference.cache
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\obj\Debug\Visualizer.MainForm.resources
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\obj\Debug\Visualizer.Properties.Resources.resources
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\obj\Debug\Visualizer.csproj.GenerateResource.cache
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\obj\Debug\Visualizer.csproj.CoreCompileInputs.cache
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\obj\Debug\Visualizer.csproj.CopyComplete
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\obj\Debug\Visualizer.exe
+C:\Users\IT-КВАНТУМ 2\visualizer\Visualizer\obj\Debug\Visualizer.pdb
