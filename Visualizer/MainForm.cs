@@ -87,16 +87,28 @@ namespace Visualizer
                     List<Point> lineEnding = new List<Point>();
                     for (int i = 0; i < points.Count; i++)
                     {
-                        for (int j = 0; j < points[i].Count; j++)
+                        if (i == 0 || i == points.Count - 1)
                         {
-                            if (j < points[i].Count - 1)
+                            for (int j = 0; j < points[i].Count; j++)
                             {
-                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
-                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
-
+                                if (j < points[i].Count - 1)
+                                {
+                                    graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
+                                }
+                            }
+                            if (i == 0)
+                            {
+                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
+                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
                             }
                         }
+                        else
+                        {
+                            graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
+                            graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
+                        }
                     }
+
 
                     graphicResult.Save("result.png");
                     ResultGraphic.Image = graphicResult;
@@ -143,29 +155,11 @@ namespace Visualizer
                     }
                 }
             }
-
-            Console.WriteLine();
-            Console.WriteLine($"maxX = {maxX}, maxY = {maxY}");
-            Console.WriteLine($"minX = {minX}, minY = {minY}");
-            Console.WriteLine();
             
             float kx = 1000 / maxX;
             float ky = 800 / maxY;
 
-            Console.WriteLine($"kx = {kx}, ky = {ky}");
-            Console.WriteLine();
-
-            maxX *= kx;
-            maxY *= ky;
-            minX *= kx;
-            minY *= ky;
-
-            Console.WriteLine($"maxX = {maxX}, maxY = {maxY}");
-            Console.WriteLine($"minX = {minX}, minY = {minY}");
-            Console.WriteLine();
-
-            int lengthX = ((int)maxX).ToString().Length;
-            int lengthY = ((int)maxY).ToString().Length;
+            
 
             var foo = new PrivateFontCollection();
 
@@ -173,11 +167,18 @@ namespace Visualizer
             {
                 graphic.DrawLine(new Pen(Color.Black, (float)2.5), 1000 / 5 * i, 800, 1000 / 5 * i, 795);
                 graphic.DrawLine(new Pen(Color.Black, (float)2.5), 0, 800 / 5 * i, 5, 800 / 5 * i);
+                Console.WriteLine(maxX);
                 if (i != 0)
+                {
                     graphic.DrawString((maxX / 5 * i).ToString(), new Font("Times New Roman", 24, FontStyle.Regular), new SolidBrush(Color.Black), 1000 / 5 * i - 25, 750);
+                    graphic.DrawString((maxX / 5 * i).ToString(), new Font("Times New Roman", 24, FontStyle.Regular), new SolidBrush(Color.Black), 15, 800 / 5 * i - 15);
+                }
             }
 
-
+            maxX *= kx;
+            maxY *= ky;
+            minX *= kx;
+            minY *= ky;
 
             foreach (var line in points)
             {
@@ -187,11 +188,8 @@ namespace Visualizer
                     int scaledX = (int) (point.X * kx - minX / 2);
                     int scaledY = 800 - (int) (point.Y * ky - minY / 2);
 
-                    Console.WriteLine($"{scaledX} {scaledY}");
-
                     converted.Add(new Point(scaledX, scaledY));
                 }
-                Console.WriteLine();
 
                 convertedPoints.Add(converted);
             }
