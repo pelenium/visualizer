@@ -33,10 +33,8 @@
             this.DrawButton = new System.Windows.Forms.Button();
             this.Label = new System.Windows.Forms.Label();
             this.InsrumentPanel = new System.Windows.Forms.Panel();
-            this.DivisionCounter = new System.Windows.Forms.TrackBar();
             this.ResultGraphic = new System.Windows.Forms.PictureBox();
             this.InsrumentPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DivisionCounter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ResultGraphic)).BeginInit();
             this.SuspendLayout();
             // 
@@ -61,7 +59,7 @@
             // DrawButton
             // 
             this.DrawButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.5F);
-            this.DrawButton.Location = new System.Drawing.Point(3, 140);
+            this.DrawButton.Location = new System.Drawing.Point(4, 89);
             this.DrawButton.Name = "DrawButton";
             this.DrawButton.Size = new System.Drawing.Size(136, 73);
             this.DrawButton.TabIndex = 2;
@@ -81,7 +79,6 @@
             // 
             // InsrumentPanel
             // 
-            this.InsrumentPanel.Controls.Add(this.DivisionCounter);
             this.InsrumentPanel.Controls.Add(this.Label);
             this.InsrumentPanel.Controls.Add(this.DrawButton);
             this.InsrumentPanel.Controls.Add(this.ListName);
@@ -90,13 +87,6 @@
             this.InsrumentPanel.Name = "InsrumentPanel";
             this.InsrumentPanel.Size = new System.Drawing.Size(143, 800);
             this.InsrumentPanel.TabIndex = 0;
-            // 
-            // DivisionCounter
-            // 
-            this.DivisionCounter.Location = new System.Drawing.Point(6, 89);
-            this.DivisionCounter.Name = "DivisionCounter";
-            this.DivisionCounter.Size = new System.Drawing.Size(130, 45);
-            this.DivisionCounter.TabIndex = 3;
             // 
             // ResultGraphic
             // 
@@ -110,14 +100,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1174, 875);
+            this.ClientSize = new System.Drawing.Size(1174, 828);
             this.Controls.Add(this.ResultGraphic);
             this.Controls.Add(this.InsrumentPanel);
             this.Name = "MainForm";
             this.Text = "Form1";
             this.InsrumentPanel.ResumeLayout(false);
             this.InsrumentPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DivisionCounter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ResultGraphic)).EndInit();
             this.ResumeLayout(false);
 
@@ -131,7 +120,6 @@
         private System.Windows.Forms.Label Label;
         private System.Windows.Forms.Panel InsrumentPanel;
         private System.Windows.Forms.PictureBox ResultGraphic;
-        private System.Windows.Forms.TrackBar DivisionCounter;
     }
 }
 

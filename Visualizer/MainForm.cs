@@ -81,8 +81,6 @@ namespace Visualizer
                     graphic = Graphics.FromImage(graphicResult);
                     graphic.Clear(Color.White);
 
-                    Console.WriteLine(points.Count);
-
                     points = ConvertToCoordinateSystem(points);
                     List<Point> lineEnding = new List<Point>();
                     for (int i = 0; i < points.Count; i++)
@@ -113,7 +111,8 @@ namespace Visualizer
                     graphicResult.Save("result.png");
                     ResultGraphic.Image = graphicResult;
                 }
-            } catch (Exception ex2)
+            }
+            catch (Exception ex2)
             {
                 Console.WriteLine(ex2);
             }
@@ -130,19 +129,17 @@ namespace Visualizer
 
             foreach (var line in points)
             {
-                foreach (var point in line )
+                foreach (var point in line)
                 {
-                    Console.WriteLine($"{point.X} {point.Y}");
-
                     if (point.X > maxX)
                     {
                         maxX = point.X;
-                    } 
+                    }
 
                     if (point.Y > maxY)
                     {
                         maxY = point.Y;
-                    } 
+                    }
 
                     if (point.X < minX)
                     {
@@ -155,23 +152,18 @@ namespace Visualizer
                     }
                 }
             }
-            
+
             float kx = 1000 / maxX;
             float ky = 800 / maxY;
-
-            
-
-            var foo = new PrivateFontCollection();
 
             for (int i = 0; i < 5; i++)
             {
                 graphic.DrawLine(new Pen(Color.Black, (float)2.5), 1000 / 5 * i, 800, 1000 / 5 * i, 795);
-                graphic.DrawLine(new Pen(Color.Black, (float)2.5), 0, 800 / 5 * i, 5, 800 / 5 * i);
-                Console.WriteLine(maxX);
+                graphic.DrawLine(new Pen(Color.Black, (float)2.5), 0, 800 - (800 / 5 * i), 5, 800 - (800 / 5 * i));
                 if (i != 0)
                 {
-                    graphic.DrawString((maxX / 5 * i).ToString(), new Font("Times New Roman", 24, FontStyle.Regular), new SolidBrush(Color.Black), 1000 / 5 * i - 25, 750);
-                    graphic.DrawString((maxX / 5 * i).ToString(), new Font("Times New Roman", 24, FontStyle.Regular), new SolidBrush(Color.Black), 15, 800 / 5 * i - 15);
+                    graphic.DrawString((maxX / 5 * i).ToString(), new Font("Times New Roman", 12, FontStyle.Regular), new SolidBrush(Color.Black), 1000 / 5 * i - 12, 770);
+                    graphic.DrawString((maxX / 5 * (5 - i)).ToString(), new Font("Times New Roman", 12, FontStyle.Regular), new SolidBrush(Color.Black), 15, 800 / 5 * i - 9);
                 }
             }
 
@@ -185,8 +177,8 @@ namespace Visualizer
                 List<Point> converted = new List<Point>();
                 foreach (var point in line)
                 {
-                    int scaledX = (int) (point.X * kx - minX / 2);
-                    int scaledY = 800 - (int) (point.Y * ky - minY / 2);
+                    int scaledX = (int)(point.X * kx - minX / 2);
+                    int scaledY = 800 - (int)(point.Y * ky - minY / 2);
 
                     converted.Add(new Point(scaledX, scaledY));
                 }
