@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using OfficeOpenXml;
 using System.Drawing.Text;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace Visualizer
 {
@@ -81,7 +83,8 @@ namespace Visualizer
                     graphic = Graphics.FromImage(graphicResult);
                     graphic.Clear(Color.White);
 
-                    points = ConvertToCoordinateSystem(points);
+                    int maxX = 0, maxY = 0;
+                    points = ConvertToCoordinateSystem(points, ref maxX, ref maxY);
                     List<Point> lineEnding = new List<Point>();
                     for (int i = 0; i < points.Count; i++)
                     {
@@ -91,21 +94,23 @@ namespace Visualizer
                             {
                                 if (j < points[i].Count - 1)
                                 {
-                                    graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
+                                    graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
                                 }
                             }
                             if (i == 0)
                             {
-                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
-                                graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
+                                graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
+                                graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
                             }
                         }
                         else
                         {
-                            graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
-                            graphic.DrawLine(new Pen(Color.Black, (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
+                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
+                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
                         }
                     }
+
+                    FloodFill(graphicResult, maxX / 2, maxY / 2, Color.FromArgb(128, Color.Black));
 
 
                     graphicResult.Save("result.png");
@@ -118,7 +123,7 @@ namespace Visualizer
             }
         }
 
-        public static List<List<Point>> ConvertToCoordinateSystem(List<List<Point>> points)
+        public static List<List<Point>> ConvertToCoordinateSystem(List<List<Point>> points, ref int MaxX, ref int MaxY)
         {
             List<List<Point>> convertedPoints = new List<List<Point>>();
             float maxX = int.MinValue;
@@ -158,8 +163,8 @@ namespace Visualizer
 
             for (int i = 0; i < 5; i++)
             {
-                graphic.DrawLine(new Pen(Color.Black, (float)2.5), 1000 / 5 * i, 800, 1000 / 5 * i, 795);
-                graphic.DrawLine(new Pen(Color.Black, (float)2.5), 0, 800 - (800 / 5 * i), 5, 800 - (800 / 5 * i));
+                graphic.DrawLine(new Pen(Color.FromArgb(255, Color.Black), (float)2.5), 1000 / 5 * i, 800, 1000 / 5 * i, 795);
+                graphic.DrawLine(new Pen(Color.FromArgb(255, Color.Black), (float)2.5), 0, 800 - (800 / 5 * i), 5, 800 - (800 / 5 * i));
                 if (i != 0)
                 {
                     graphic.DrawString((maxX / 5 * i).ToString(), new Font("Times New Roman", 12, FontStyle.Regular), new SolidBrush(Color.Black), 1000 / 5 * i - 12, 770);
@@ -171,6 +176,9 @@ namespace Visualizer
             maxY *= ky;
             minX *= kx;
             minY *= ky;
+
+            MaxX = (int) maxX;
+            MaxY = (int) maxY;
 
             foreach (var line in points)
             {
@@ -188,5 +196,43 @@ namespace Visualizer
 
             return convertedPoints;
         }
-    }
-}
+        void FloodFill(Bitmap bitmap, int x, int y, Color color)
+        {
+            BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+            int[] bits = new int[data.Stride / 4 * data.Height];
+            Marshal.Copy(data.Scan0, bits, 0, bits.Length);
+
+            LinkedList<Point> check = new LinkedList<Point>();
+            int floodTo = color.ToArgb();
+            int floodFrom = bits[x + y * data.Stride / 4];
+            bits[x + y * data.Stride / 4] = floodTo;
+
+            if (floodFrom != floodTo)
+            {
+                check.AddLast(new Point(x, y));
+                while (check.Count > 0)
+                {
+                    Point cur = check.First.Value;
+                    check.RemoveFirst();
+
+                    foreach (Point off in new Point[] {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)})
+                    {
+                        Point next = new Point(cur.X + off.X, cur.Y + off.Y);
+                        if (next.X >= 0 && next.Y >= 0 &&
+                            next.X < data.Width &&
+                            next.Y < data.Height)
+                        {
+                            if (bits[next.X + next.Y * data.Stride / 4] == floodFrom)
+                            {
+                                check.AddLast(next);
+                                bits[next.X + next.Y * data.Stride / 4] = floodTo;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Marshal.Copy(bits, 0, data.Scan0, bits.Length);
+            bitmap.UnlockBits(data);
+        }
+    }}
