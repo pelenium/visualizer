@@ -83,8 +83,8 @@ namespace Visualizer
                     graphic = Graphics.FromImage(graphicResult);
                     graphic.Clear(Color.White);
 
-                    int maxX = 0, maxY = 0;
-                    points = ConvertToCoordinateSystem(points, ref maxX, ref maxY);
+                    int maxX = 0, maxY = 0, minX = 0, minY = 0;
+                    points = ConvertToCoordinateSystem(points, ref maxX, ref maxY, ref minX, ref minY);
                     List<Point> lineEnding = new List<Point>();
                     for (int i = 0; i < points.Count; i++)
                     {
@@ -110,7 +110,7 @@ namespace Visualizer
                         }
                     }
 
-                    FloodFill(graphicResult, maxX / 2, maxY / 2, Color.FromArgb(128, Color.Black));
+                    FloodFill(graphicResult, maxX - (maxX - minX) / 2, maxY - (maxY - minY) / 2, Color.FromArgb(128, Color.Black));
 
 
                     graphicResult.Save("result.png");
@@ -123,7 +123,7 @@ namespace Visualizer
             }
         }
 
-        public static List<List<Point>> ConvertToCoordinateSystem(List<List<Point>> points, ref int MaxX, ref int MaxY)
+        public static List<List<Point>> ConvertToCoordinateSystem(List<List<Point>> points, ref int MaxX, ref int MaxY, ref int MinX, ref int MinY)
         {
             List<List<Point>> convertedPoints = new List<List<Point>>();
             float maxX = int.MinValue;
@@ -179,6 +179,8 @@ namespace Visualizer
 
             MaxX = (int) maxX;
             MaxY = (int) maxY;
+            MinX = (int) minX;
+            MinY = (int) minY;
 
             foreach (var line in points)
             {
