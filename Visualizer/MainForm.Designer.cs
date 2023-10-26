@@ -95,6 +95,7 @@
             this.ResultGraphic.Size = new System.Drawing.Size(1000, 800);
             this.ResultGraphic.TabIndex = 1;
             this.ResultGraphic.TabStop = false;
+            this.ResultGraphic.Click += new System.EventHandler(this.ResultGraphic_Click);
             // 
             // MainForm
             // 

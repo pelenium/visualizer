@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
 using OfficeOpenXml;
-using System.Drawing.Text;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
@@ -44,20 +43,26 @@ namespace Visualizer
                     string list = ListName.Text;
                     ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[list];
 
-                    List<List<Point>> points = new List<List<Point>>();
+                    List<List<Point>> points1 = new List<List<Point>>();
+                    List<List<Point>> points2 = new List<List<Point>>();
                     if (worksheet != null)
                     {
                         try
                         {
                             for (int row = 1; row <= worksheet.Dimension.Rows; row++)
                             {
-                                if (points.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
+                                if (points1.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
                                 {
-                                    points.Add(new List<Point>());
+                                    points1.Add(new List<Point>());
+                                }
+                                if (points2.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
+                                {
+                                    points2.Add(new List<Point>());
                                 }
                                 else
                                 {
-                                    points[points.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
+                                    points1[points1.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
+                                    points2[points2.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 3].Value?.ToString())));
                                 }
                             }
                         }
@@ -78,42 +83,21 @@ namespace Visualizer
                         return;
                     }
 
-                    graphicResult = new Bitmap(ResultGraphic.Width, ResultGraphic.Height);
+                    var graphicResult1 = drawPoints(points1, true);
+                    var graphicResult2 = drawPoints(points2, false);
 
-                    graphic = Graphics.FromImage(graphicResult);
-                    graphic.Clear(Color.White);
+                    FloodFill(graphicResult1.graphic, graphicResult1.maxX - (graphicResult1.maxX - graphicResult1.minX) / 2, graphicResult1.maxY - (graphicResult1.maxY - graphicResult1.minY) / 2, Color.FromArgb(128, Color.Black));
+                    // FloodFill(graphicResult2.graphic, graphicResult2.maxX - (graphicResult2.maxX - graphicResult2.minX) / 2, graphicResult2.maxY - (graphicResult2.maxY - graphicResult2.minY) / 2, Color.FromArgb(128, Color.Black));
 
-                    int maxX = 0, maxY = 0, minX = 0, minY = 0;
-                    points = ConvertToCoordinateSystem(points, ref maxX, ref maxY, ref minX, ref minY);
-                    List<Point> lineEnding = new List<Point>();
-                    for (int i = 0; i < points.Count; i++)
-                    {
-                        if (i == 0 || i == points.Count - 1)
-                        {
-                            for (int j = 0; j < points[i].Count; j++)
-                            {
-                                if (j < points[i].Count - 1)
-                                {
-                                    graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
-                                }
-                            }
-                            if (i == 0)
-                            {
-                                graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
-                                graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
-                            }
-                        }
-                        else
-                        {
-                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
-                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
-                        }
-                    }
+                    graphicResult1.graphic.Save("result1.png");
+                    graphicResult1.graphic.Save("result2.png");
 
-                    FloodFill(graphicResult, maxX - (maxX - minX) / 2, maxY - (maxY - minY) / 2, Color.FromArgb(128, Color.Black));
+                    var img1 = Image.FromFile("result1.png");
+                    var img2 = Image.FromFile("result2.png");
 
+                    graphic.DrawImage(img1, new Point(0, 0));
+                    graphic.DrawImage(img2, new Point(0, 0));
 
-                    graphicResult.Save("result.png");
                     ResultGraphic.Image = graphicResult;
                 }
             }
@@ -121,6 +105,62 @@ namespace Visualizer
             {
                 Console.WriteLine(ex2);
             }
+        }
+
+        private static Graphic drawPoints(List<List<Point>> points, bool shouldFill)
+        {
+            graphicResult = new Bitmap(1000, 800);
+
+            graphic = Graphics.FromImage(graphicResult);
+
+            int maxX = 0, maxY = 0, minX = 0, minY = 0;
+            points = ConvertToCoordinateSystem(points, ref maxX, ref maxY, ref minX, ref minY);
+
+            List<Point> lineEnding = new List<Point>();
+            if (shouldFill)
+            {
+                for (int i = 0; i < points.Count; i++)
+                {
+                    if (i == 0 || i == points.Count - 1)
+                    {
+                        for (int j = 0; j < points[i].Count; j++)
+                        {
+                            if (j < points[i].Count - 1)
+                            {
+                                graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
+                            }
+                        }
+                        if (i == 0)
+                        {
+                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
+                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
+                        }
+                    }
+                    else
+                    {
+                        graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
+                        graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
+                    }
+                }
+            } else
+            {
+                for (int i = 0; i < points.Count; i++)
+                {
+                    for (int j = 0; j < points[i].Count; j++)
+                    {
+                        if (i == points.Count - 1)
+                        {
+                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black)), points[i][j].X, points[i][j].Y, points[i][j].X, points[i][j].Y);
+                        }
+                        else
+                        {
+                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black)), points[i][j].X, points[i][j].Y, points[i + 1][j].X, points[i + 1][j].Y);
+                        }
+                    }
+                }
+            }
+
+            return new Graphic(maxX, maxY, minX, minY, graphicResult);
         }
 
         public static List<List<Point>> ConvertToCoordinateSystem(List<List<Point>> points, ref int MaxX, ref int MaxY, ref int MinX, ref int MinY)
@@ -237,4 +277,10 @@ namespace Visualizer
             Marshal.Copy(bits, 0, data.Scan0, bits.Length);
             bitmap.UnlockBits(data);
         }
-    }}
+
+        private void ResultGraphic_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
