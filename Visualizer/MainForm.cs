@@ -45,24 +45,47 @@ namespace Visualizer
 
                     List<List<Point>> points1 = new List<List<Point>>();
                     List<List<Point>> points2 = new List<List<Point>>();
+                    List<List<Point>> points3 = new List<List<Point>>();
+
+                    bool shouldAddTo3rd = false;
+
                     if (worksheet != null)
                     {
                         try
                         {
                             for (int row = 1; row <= worksheet.Dimension.Rows; row++)
                             {
-                                if (points1.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
+                                if (shouldAddTo3rd)
                                 {
-                                    points1.Add(new List<Point>());
-                                }
-                                if (points2.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
-                                {
-                                    points2.Add(new List<Point>());
+                                    if (points3.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 2].Value?.ToString()))
+                                    {
+                                        points3.Add(new List<Point>());
+                                    }
+                                    else
+                                    {
+                                        points3[points3.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
+                                    }
                                 }
                                 else
                                 {
-                                    points1[points1.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
-                                    points2[points2.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 3].Value?.ToString())));
+                                    if (!string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()) && string.IsNullOrWhiteSpace(worksheet.Cells[row, 3].Value?.ToString()))
+                                    {
+                                        shouldAddTo3rd = true;
+                                        continue;
+                                    }
+                                    if (points1.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
+                                    {
+                                        points1.Add(new List<Point>());
+                                    }
+                                    if (points2.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
+                                    {
+                                        points2.Add(new List<Point>());
+                                    }
+                                    else
+                                    {
+                                        points1[points1.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
+                                        points2[points2.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 3].Value?.ToString())));
+                                    }
                                 }
                             }
                         }
@@ -83,20 +106,27 @@ namespace Visualizer
                         return;
                     }
 
+                    points1.RemoveAll(i => i.Count == 0);
+                    points2.RemoveAll(i => i.Count == 0);
+                    points3.RemoveAll(i => i.Count == 0);
+
                     var graphicResult1 = drawPoints(points1, true);
                     var graphicResult2 = drawPoints(points2, false);
+                    var graphicResult3 = drawPoints(points3, false);
 
                     FloodFill(graphicResult1.graphic, graphicResult1.maxX - (graphicResult1.maxX - graphicResult1.minX) / 2, graphicResult1.maxY - (graphicResult1.maxY - graphicResult1.minY) / 2, Color.FromArgb(128, Color.Black));
-                    // FloodFill(graphicResult2.graphic, graphicResult2.maxX - (graphicResult2.maxX - graphicResult2.minX) / 2, graphicResult2.maxY - (graphicResult2.maxY - graphicResult2.minY) / 2, Color.FromArgb(128, Color.Black));
 
                     graphicResult1.graphic.Save("result1.png");
-                    graphicResult1.graphic.Save("result2.png");
+                    graphicResult2.graphic.Save("result2.png");
+                    graphicResult3.graphic.Save("result3.png");
 
                     var img1 = Image.FromFile("result1.png");
                     var img2 = Image.FromFile("result2.png");
+                    var img3 = Image.FromFile("result3.png");
 
                     graphic.DrawImage(img1, new Point(0, 0));
                     graphic.DrawImage(img2, new Point(0, 0));
+                    graphic.DrawImage(img3, new Point(0, 0));
 
                     ResultGraphic.Image = graphicResult;
                 }
@@ -116,9 +146,9 @@ namespace Visualizer
             int maxX = 0, maxY = 0, minX = 0, minY = 0;
             points = ConvertToCoordinateSystem(points, ref maxX, ref maxY, ref minX, ref minY);
 
-            List<Point> lineEnding = new List<Point>();
             if (shouldFill)
             {
+                Console.WriteLine(points.Count);
                 for (int i = 0; i < points.Count; i++)
                 {
                     if (i == 0 || i == points.Count - 1)
@@ -138,6 +168,8 @@ namespace Visualizer
                     }
                     else
                     {
+                        Console.WriteLine(i);
+                        Console.WriteLine(points[i+1][0]);
                         graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
                         graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
                     }
