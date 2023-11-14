@@ -108,25 +108,25 @@ namespace Visualizer
 
                     points1.RemoveAll(i => i.Count == 0);
                     points2.RemoveAll(i => i.Count == 0);
-                    points3.RemoveAll(i => i.Count == 0);
+                    // points3.RemoveAll(i => i.Count == 0);
 
                     var graphicResult1 = drawPoints(points1, true);
                     var graphicResult2 = drawPoints(points2, false);
-                    var graphicResult3 = drawPoints(points3, false);
+                    // var graphicResult3 = drawPoints(points3, false);
 
                     FloodFill(graphicResult1.graphic, graphicResult1.maxX - (graphicResult1.maxX - graphicResult1.minX) / 2, graphicResult1.maxY - (graphicResult1.maxY - graphicResult1.minY) / 2, Color.FromArgb(128, Color.Black));
 
                     graphicResult1.graphic.Save("result1.png");
                     graphicResult2.graphic.Save("result2.png");
-                    graphicResult3.graphic.Save("result3.png");
+                    // graphicResult3.graphic.Save("result3.png");
 
                     var img1 = Image.FromFile("result1.png");
                     var img2 = Image.FromFile("result2.png");
-                    var img3 = Image.FromFile("result3.png");
+                    // var img3 = Image.FromFile("result3.png");
 
                     graphic.DrawImage(img1, new Point(0, 0));
                     graphic.DrawImage(img2, new Point(0, 0));
-                    graphic.DrawImage(img3, new Point(0, 0));
+                    // graphic.DrawImage(img3, new Point(0, 0));
 
                     ResultGraphic.Image = graphicResult;
                 }
