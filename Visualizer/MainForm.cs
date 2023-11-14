@@ -114,7 +114,7 @@ namespace Visualizer
                     var graphicResult2 = drawPoints(points2, false);
                     // var graphicResult3 = drawPoints(points3, false);
 
-                    FloodFill(graphicResult1.graphic, graphicResult1.maxX - (graphicResult1.maxX - graphicResult1.minX) / 2, graphicResult1.maxY - (graphicResult1.maxY - graphicResult1.minY) / 2, Color.FromArgb(128, Color.Black));
+                    
 
                     graphicResult1.graphic.Save("result1.png");
                     graphicResult2.graphic.Save("result2.png");
@@ -172,6 +172,19 @@ namespace Visualizer
                         Console.WriteLine(points[i+1][0]);
                         graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
                         graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
+                    }
+                }
+
+                FloodFill(graphicResult, maxX - (maxX - minX) / 2, maxY - (maxY - minY) / 2, Color.FromArgb(128, Color.Black));
+
+                for (int i = 0; i < points.Count; i++)
+                {
+                    for (int j = 0; j < points[i].Count; j++)
+                    {
+                        if (j < points[i].Count - 1)
+                        {
+                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][j].X, points[i][j].Y, points[i][j + 1].X, points[i][j + 1].Y);
+                        }
                     }
                 }
             } else
@@ -270,7 +283,7 @@ namespace Visualizer
 
             return convertedPoints;
         }
-        void FloodFill(Bitmap bitmap, int x, int y, Color color)
+        private static void FloodFill(Bitmap bitmap, int x, int y, Color color)
         {
             BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
             int[] bits = new int[data.Stride / 4 * data.Height];
