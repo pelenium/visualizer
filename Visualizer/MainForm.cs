@@ -52,8 +52,12 @@ namespace Visualizer
                     {
                         try
                         {
+                            Console.WriteLine(worksheet.Dimension.Rows);
+                            Console.WriteLine();
                             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                             {
+                                Console.WriteLine(worksheet.Cells[row, 1].Value?.ToString());
+
                                 if (worksheet.Cells[row, 1].Value?.ToString().Trim(' ') == "/")
                                 {
                                     Console.WriteLine("found");
@@ -69,18 +73,21 @@ namespace Visualizer
                                         if (points1.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
                                         {
                                             points1.Add(new List<Point>());
+                                            continue;
                                         }
                                         break;
                                     case 1:
                                         if (points2.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
                                         {
                                             points2.Add(new List<Point>());
+                                            continue;
                                         }
                                         break;
                                     case 2:
                                         if (points3.Count == 0 || string.IsNullOrWhiteSpace(worksheet.Cells[row, 1].Value?.ToString()))
                                         {
                                             points3.Add(new List<Point>());
+                                            continue;
                                         }
                                         break;
                                 }
@@ -96,14 +103,13 @@ namespace Visualizer
                                         points3[points3.Count - 1].Add(new Point((int)float.Parse(worksheet.Cells[row, 1].Value?.ToString()), (int)float.Parse(worksheet.Cells[row, 2].Value?.ToString())));
                                         break;
                                 }
-
+                            }
+                        }
+                        catch (Exception ex1)
+                        {
+                            Console.WriteLine(ex1);
+                        }
                     }
-                }
-                    catch (Exception ex1)
-                    {
-                        Console.WriteLine(ex1);
-                    }
-                }
                     else
                     {
                         MessageBox.Show(
@@ -117,23 +123,24 @@ namespace Visualizer
                     }
 
                     points1.RemoveAll(i => i.Count == 0);
+                    points2.RemoveAll(i => i.Count == 0);
+                    points3.RemoveAll(i => i.Count == 0);
 
-                    var graphicResult1 = drawPoints(points1, true);
+                    var graphicResult1 = drawPoints(points1, false);
                     var graphicResult2 = drawPoints(points2, false);
-                    var graphicResult3 = drawPoints(points3, false);
-                    
+                    // var graphicResult3 = drawPoints(points3, false);
 
                     graphicResult1.graphic.Save("result1.png");
-                    graphicResult1.graphic.Save("result2.png");
-                    graphicResult1.graphic.Save("result3.png");
+                    // graphicResult1.graphic.Save("result2.png");
+                    // graphicResult1.graphic.Save("result3.png");
 
                     var img1 = Image.FromFile("result1.png");
-                    var img2 = Image.FromFile("result2.png");
-                    var img3 = Image.FromFile("result3.png");
+                    // var img2 = Image.FromFile("result2.png");
+                    // var img3 = Image.FromFile("result3.png");
 
                     graphic.DrawImage(img1, new Point(0, 0));
-                    graphic.DrawImage(img2, new Point(0, 0));
-                    graphic.DrawImage(img3, new Point(0, 0));
+                    // graphic.DrawImage(img2, new Point(0, 0));
+                    // graphic.DrawImage(img3, new Point(0, 0));
 
                     ResultGraphic.Image = graphicResult;
                 }
@@ -176,7 +183,7 @@ namespace Visualizer
                     else
                     {
                         Console.WriteLine(i);
-                        Console.WriteLine(points[i+1][0]);
+                        Console.WriteLine(points[i + 1][0]);
                         graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][0].X, points[i][0].Y, points[i + 1][0].X, points[i + 1][0].Y);
                         graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black), (float)2.5), points[i][points[i].Count - 1].X, points[i][points[i].Count - 1].Y, points[i + 1][points[i + 1].Count - 1].X, points[i + 1][points[i + 1].Count - 1].Y);
                     }
@@ -194,20 +201,22 @@ namespace Visualizer
                         }
                     }
                 }
-            } else
+            }
+            else
             {
-                for (int i = 0; i < points.Count; i++)
+                /* 
+                TODO:
+                Исправить баг с соединением точек (узнать точный вариант соединения)                
+                */
+                Console.WriteLine(points.Count);
+                for (int i = 0; i < points.Count - 1; i++)
                 {
+                    Console.WriteLine(points[i].Count);
+                    Console.WriteLine(points[i+1].Count);
                     for (int j = 0; j < points[i].Count; j++)
                     {
-                        if (i == points.Count - 1)
-                        {
-                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black)), points[i][j].X, points[i][j].Y, points[i][j].X, points[i][j].Y);
-                        }
-                        else
-                        {
-                            graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black)), points[i][j].X, points[i][j].Y, points[i + 1][j].X, points[i + 1][j].Y);
-                        }
+                        Console.WriteLine($"i - {i}, j - {j}");
+                        graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black)), points[i][j].X, points[i][j].Y, points[i + 1][j].X, points[i + 1][j].Y);
                     }
                 }
             }
@@ -269,10 +278,10 @@ namespace Visualizer
             minX *= kx;
             minY *= ky;
 
-            MaxX = (int) maxX;
-            MaxY = (int) maxY;
-            MinX = (int) minX;
-            MinY = (int) minY;
+            MaxX = (int)maxX;
+            MaxY = (int)maxY;
+            MinX = (int)minX;
+            MinY = (int)minY;
 
             foreach (var line in points)
             {
@@ -309,7 +318,7 @@ namespace Visualizer
                     Point cur = check.First.Value;
                     check.RemoveFirst();
 
-                    foreach (Point off in new Point[] {new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0)})
+                    foreach (Point off in new Point[] { new Point(0, -1), new Point(0, 1), new Point(-1, 0), new Point(1, 0) })
                     {
                         Point next = new Point(cur.X + off.X, cur.Y + off.Y);
                         if (next.X >= 0 && next.Y >= 0 &&
