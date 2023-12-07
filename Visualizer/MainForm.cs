@@ -126,21 +126,35 @@ namespace Visualizer
                     points2.RemoveAll(i => i.Count == 0);
                     points3.RemoveAll(i => i.Count == 0);
 
-                    var graphicResult1 = drawPoints(points1, false);
-                    var graphicResult2 = drawPoints(points2, false);
-                    // var graphicResult3 = drawPoints(points3, false);
+                    Console.WriteLine();
+                    Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAA");
+                    Console.WriteLine();
+
+                    foreach (var i in points2)
+                    {
+                        Console.WriteLine(i.Count);
+                        foreach (var j in i)
+                        {
+                            Console.WriteLine($"{j.X} {j.Y}");
+                        }
+                        Console.WriteLine();
+                    }
+
+                    var graphicResult1 = drawPoints(points1, false, 2);
+                    var graphicResult2 = drawPoints(points2, false, 2);
+                    var graphicResult3 = drawPoints(points3, false, 2);
 
                     graphicResult1.graphic.Save("result1.png");
-                    // graphicResult1.graphic.Save("result2.png");
-                    // graphicResult1.graphic.Save("result3.png");
+                    graphicResult2.graphic.Save("result2.png");
+                    graphicResult3.graphic.Save("result3.png");
 
                     var img1 = Image.FromFile("result1.png");
-                    // var img2 = Image.FromFile("result2.png");
-                    // var img3 = Image.FromFile("result3.png");
+                    var img2 = Image.FromFile("result2.png");
+                    var img3 = Image.FromFile("result3.png");
 
                     graphic.DrawImage(img1, new Point(0, 0));
-                    // graphic.DrawImage(img2, new Point(0, 0));
-                    // graphic.DrawImage(img3, new Point(0, 0));
+                    graphic.DrawImage(img2, new Point(0, 0));
+                    graphic.DrawImage(img3, new Point(0, 0));
 
                     ResultGraphic.Image = graphicResult;
                 }
@@ -151,7 +165,7 @@ namespace Visualizer
             }
         }
 
-        private static Graphic drawPoints(List<List<Point>> points, bool shouldFill)
+        private static Graphic drawPoints(List<List<Point>> points, bool shouldFill, int n)
         {
             graphicResult = new Bitmap(1000, 800);
 
@@ -208,17 +222,34 @@ namespace Visualizer
                 TODO:
                 Исправить баг с соединением точек (узнать точный вариант соединения)                
                 */
-                Console.WriteLine(points.Count);
-                for (int i = 0; i < points.Count - 1; i++)
+
+                switch (n)
                 {
-                    Console.WriteLine(points[i].Count);
-                    Console.WriteLine(points[i+1].Count);
-                    for (int j = 0; j < points[i].Count; j++)
-                    {
-                        Console.WriteLine($"i - {i}, j - {j}");
-                        graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black)), points[i][j].X, points[i][j].Y, points[i + 1][j].X, points[i + 1][j].Y);
-                    }
+                    case 1:
+                        for (int i = 0; i < points.Count - 1; i++)
+                        {
+                            Console.WriteLine(points[i].Count);
+                            Console.WriteLine(points[i + 1].Count);
+                            for (int j = 0; j < points[i].Count; j++)
+                            {
+                                Console.WriteLine($"i - {i}, j - {j}");
+                                graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black)), points[i][j].X, points[i][j].Y, points[i + 1][j].X, points[i + 1][j].Y);
+                            }
+                        }
+                        break;
+                    case 2:
+                        Console.WriteLine(points.Count);
+                        for (int i = 0; i < points.Count; i++)
+                        {
+                            for (int j = 0; j < points[i].Count - 1; j++)
+                            {
+                                graphic.DrawLine(new Pen(Color.FromArgb(128, Color.Black)), points[i][j].X, points[i][j].Y, points[i][j+1].X, points[i][j+1].Y);
+                            }
+                        }
+                        break;
+
                 }
+
             }
 
             return new Graphic(maxX, maxY, minX, minY, graphicResult);
